@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - 米核AI●易山</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #c9d1d9;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(22, 27, 34, 0.95);
+            border-bottom: 1px solid #30363d;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 20px;
+            background: linear-gradient(135deg, #58a6ff 0%, #bc8cff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #58a6ff;
+            border: 1px solid #58a6ff;
+        }
+        .btn-secondary:hover {
+            background: rgba(88, 166, 255, 0.1);
+        }
+        .btn-danger {
+            background: rgba(248, 81, 73, 0.1);
+            color: #f85149;
+            border: 1px solid #f85149;
+        }
+        .btn-danger:hover {
+            background: rgba(248, 81, 73, 0.2);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 36px;
+            color: #58a6ff;
+            margin-bottom: 5px;
+        }
+        .stat-card p {
+            color: #8b949e;
+            font-size: 14px;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-header h2 {
+            font-size: 24px;
+            color: #ffffff;
+        }
+        .table-container {
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+        th {
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            color: #58a6ff;
+        }
+        tr:hover {
+            background: rgba(88, 166, 255, 0.05);
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-success {
+            background: rgba(46, 160, 67, 0.15);
+            color: #2ea043;
+        }
+        .badge-warning {
+            background: rgba(184, 136, 17, 0.15);
+            color: #b88811;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b949e;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .modal-header h2 {
+            font-size: 22px;
+            color: #ffffff;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: #8b949e;
+            font-size: 30px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .close-btn:hover {
+            color: #ffffff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #c9d1d9;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #c9d1d9;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>米核AI●易山 - 后台管理</h1>
+        <div class="header-actions">
+            <a href="/" class="btn btn-secondary">返回首页</a>
+            <a href="/logout" class="btn btn-danger">退出登录</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="tutorialCount">0</h3>
+                <p>教程总数</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="publishedCount">0</h3>
+                <p>已发布</p>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h2>教程管理</h2>
+            <button class="btn btn-primary" onclick="openAddModal()">+ 添加教程</button>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>标题</th>
+                        <th>创建时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tutorialTable">
+                </tbody>
+            </table>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                暂无教程，点击上方按钮添加
+            </div>
+        </div>
+    </div>
+    
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">添加教程</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="tutorialForm">
+                <input type="hidden" id="tutorialId">
+                <div class="form-group">
+                    <label for="title">教程标题</label>
+                    <input type="text" id="title" name="title" required placeholder="请输入教程标题">
+                </div>
+                <div class="form-group">
+                    <label for="content">教程内容</label>
+                    <div id="editor" style="min-height: 500px;"></div>
+                    <textarea id="content" name="content" required placeholder="请输入教程内容" style="display: none;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="coverImage">封面图片（可选，推荐尺寸：800x600px）</label>
+                    <input type="file" id="coverImage" name="cover_image" accept="image/*">
+                    <img id="coverImagePreview" src="" alt="封面预览" style="display:none;max-width:100%;margin-top:10px;border-radius:8px;">
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="isPublished" name="is_published" checked>
+                        <label for="isPublished">立即发布</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTutorial()">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let tutorials = [];
+        let quill;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化 Quill.js
+            quill = new Quill('#editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['blockquote', 'code-block'],
+                        [{ 'header': 1 }, { 'header': 2 }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'script': 'sub'}, { 'script': 'super' }],
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],
+                        [{ 'direction': 'rtl' }],
+                        [{ 'size': ['small', false, 'large', 'huge'] }],
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'font': [] }],
+                        [{ 'align': [] }],
+                        ['clean'],
+                        ['image', 'link']
+                    ]
+                },
+                placeholder: '请输入教程内容'
+            });
+            
+            // 处理图片上传
+            const toolbar = quill.getModule('toolbar');
+            toolbar.addHandler('image', function() {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.click();
+                
+                input.onchange = function() {
+                    const file = input.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        
+                        fetch('/api/upload', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const range = quill.getSelection();
+                            // 确保图片路径是绝对路径
+                            const imageUrl = data.location.startsWith('http') ? data.location : window.location.origin + data.location;
+                            quill.insertEmbed(range.index, 'image', imageUrl);
+                        })
+                        .catch(error => {
+                            console.error('上传失败:', error);
+                        });
+                    }
+                };
+            });
+            
+            // 点击模态框外部关闭
+            document.getElementById('tutorialModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('tutorialModal')) {
+                    closeModal();
+                }
+            });
+            
+            // 加载教程列表
+            loadTutorials();
+        });
+        
+        async function loadTutorials() {
+            try {
+                const response = await fetch('/api/admin/tutorials');
+                tutorials = await response.json();
+                renderTable();
+                updateStats();
+            } catch (error) {
+                console.error('加载教程失败:', error);
+            }
+        }
+        
+        function renderTable() {
+            const table = document.getElementById('tutorialTable');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (tutorials.length === 0) {
+                table.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            table.innerHTML = tutorials.map(t => `
+                <tr>
+                    <td>${t.id}</td>
+                    <td>${escapeHtml(t.title)}</td>
+                    <td>${t.created_at}</td>
+                    <td><span class="badge ${t.is_published ? 'badge-success' : 'badge-warning'}">${t.is_published ? '已发布' : '草稿'}</span></td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-secondary btn-sm" onclick="editTutorial(${t.id})">编辑</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTutorial(${t.id})">删除</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function updateStats() {
+            document.getElementById('tutorialCount').textContent = tutorials.length;
+            document.getElementById('publishedCount').textContent = tutorials.filter(t => t.is_published).length;
+        }
+        
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = '添加教程';
+            document.getElementById('tutorialForm').reset();
+            document.getElementById('tutorialId').value = '';
+            
+            // 清空 Quill 编辑器
+            quill.root.innerHTML = '';
+            
+            // 隐藏封面预览
+            const coverPreview = document.getElementById('coverImagePreview');
+            coverPreview.style.display = 'none';
+            coverPreview.src = '';
+            
+            document.getElementById('tutorialModal').classList.add('active');
+        }
+        
+        async function editTutorial(id) {
+            try {
+                const response = await fetch(`/api/admin/tutorials`);
+                const allTutorials = await response.json();
+                const tutorial = allTutorials.find(t => t.id === id);
+                if (!tutorial) return;
+                
+                console.log('编辑教程数据:', tutorial);
+                console.log('教程内容:', tutorial.content);
+                console.log('封面图片:', tutorial.cover_image);
+                
+                document.getElementById('modalTitle').textContent = '编辑教程';
+                document.getElementById('tutorialId').value = tutorial.id;
+                document.getElementById('title').value = tutorial.title;
+                document.getElementById('content').value = tutorial.content || '';
+                document.getElementById('isPublished').checked = tutorial.is_published;
+                
+                // 显示封面图片预览
+                const coverPreview = document.getElementById('coverImagePreview');
+                if (tutorial.cover_image) {
+                    coverPreview.src = tutorial.cover_image;
+                    coverPreview.style.display = 'block';
+                } else {
+                    coverPreview.style.display = 'none';
+                }
+                
+                // 先显示模态框，再延迟设置 Quill 内容
+                document.getElementById('tutorialModal').classList.add('active');
+                
+                setTimeout(() => {
+                    console.log('设置 Quill 内容:', tutorial.content);
+                    quill.root.innerHTML = tutorial.content || '';
+                }, 100);
+            } catch (error) {
+                console.error('获取教程详情失败:', error);
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('tutorialModal').classList.remove('active');
+        }
+        
+        async function saveTutorial() {
+            console.log('保存按钮点击触发');
+            
+            // 检查 quill 是否初始化
+            if (typeof quill === 'undefined' || !quill) {
+                alert('编辑器未初始化，请刷新页面重试');
+                return;
+            }
+            
+            // 同步 Quill.js 内容到 textarea
+            const content = quill.root.innerHTML;
+            document.getElementById('content').value = content;
+            
+            const formData = new FormData();
+            const tutorialId = document.getElementById('tutorialId').value;
+            const title = document.getElementById('title').value;
+            if (!title.trim()) {
+                alert('请输入教程标题');
+                return;
+            }
+            
+            formData.append('title', title);
+            formData.append('content', content);
+            formData.append('is_published', document.getElementById('isPublished').checked);
+            
+            const coverImage = document.getElementById('coverImage').files[0];
+            if (coverImage) {
+                formData.append('cover_image', coverImage);
+            }
+            
+            try {
+                let url, method;
+                if (tutorialId) {
+                    url = `/api/admin/tutorial/${tutorialId}`;
+                    method = 'PUT';
+                } else {
+                    url = '/api/admin/tutorial';
+                    method = 'POST';
+                }
+                
+                console.log('发送请求:', { url, method, titleLength: title.length, contentLength: content.length });
+                
+                const response = await fetch(url, {
+                    method: method,
+                    body: formData
+                });
+                
+                // 检查响应是否为 JSON（如果不是，说明后端没运行）
+                const contentType = response.headers.get('content-type') || '';
+                let result;
+                
+                if (contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // 收到 HTML 响应，说明后端未运行或 Nginx 配置错误
+                    const htmlText = await response.text();
+                    if (htmlText.includes('<html') || htmlText.includes('<!DOCTYPE')) {
+                        throw new Error('BACKEND_NOT_RUNNING');
+                    }
+                    try {
+                        result = JSON.parse(htmlText);
+                    } catch (e) {
+                        throw new Error('INVALID_RESPONSE');
+                    }
+                }
+                
+                console.log('服务器响应:', response.status, result);
+                
+                if (response.ok) {
+                    closeModal();
+                    loadTutorials();
+                    alert('保存成功！');
+                } else {
+                    const errorMsg = result.error || result.message || '未知错误';
+                    if (result.code === 401) {
+                        alert('登录已过期，请重新登录后重试');
+                        window.location.href = '/login';
+                    } else {
+                        alert('保存失败: ' + errorMsg);
+                    }
+                }
+            } catch (error) {
+                console.error('保存失败:', error);
+                
+                if (error.message === 'BACKEND_NOT_RUNNING') {
+                    alert('⚠️ 后端服务未运行！\n\n请检查：\n1. SSH 登录服务器\n2. 运行命令启动后端：python3 app.py 或 gunicorn -w 4 -b 127.0.0.1:5001 app:app\n3. 确认 Nginx 已正确配置反向代理到 127.0.0.1:5001');
+                } else if (error.message === 'INVALID_RESPONSE') {
+                    alert('⚠️ 服务器响应异常！\n\n可能原因：\n1. 后端服务运行但返回了错误页面\n2. Nginx 反向代理配置有误\n3. 请检查服务器日志');
+                } else if (error.message && error.message.includes('Unexpected token')) {
+                    alert('⚠️ 后端服务未运行！\n\n服务器返回了 HTML 而不是 JSON，说明 Flask 后端没有启动。\n\n请按以下步骤操作：\n\n1. SSH 登录服务器\n2. 进入项目目录：cd /var/www/yourwebsite\n3. 启动后端服务：\n   python3 app.py\n   或\n   gunicorn -w 4 -b 127.0.0.1:5001 app:app\n4. 刷新页面重试\n\n如果问题持续，请检查 Nginx 配置是否正确代理到 127.0.0.1:5001');
+                } else {
+                    alert('网络错误或服务器无响应:\n' + error.message);
+                }
+            }
+        }
+        
+        async function deleteTutorial(id) {
+            if (!confirm('确定要删除这个教程吗？')) return;
+            
+            try {
+                const response = await fetch(`/api/admin/tutorial/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    loadTutorials();
+                }
+            } catch (error) {
+                console.error('删除失败:', error);
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

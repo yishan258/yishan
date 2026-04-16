@@ -1,0 +1,1162 @@
+&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;米核AI●易山&lt;/title&gt;
+    &lt;style&gt;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        /* 粒子背景效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏 */
+        header {
+            background: linear-gradient(90deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.02);
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #58a6ff 0%, #bc8cff 50%, #58a6ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+            position: relative;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #c9d1d9;
+            font-weight: 500;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            position: relative;
+            padding: 8px 12px;
+            border-radius: 6px;
+            letter-spacing: 0.3px;
+        }
+        
+        .nav-links a:hover {
+            color: #ffffff;
+            background-color: rgba(88, 166, 255, 0.1);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #58a6ff, #bc8cff);
+            transition: all 0.2s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-links a:hover::after {
+            width: 60%;
+        }
+        
+        /* 登录/注册按钮 */
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15), transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(118, 75, 162, 0.15), transparent 50%),
+                        linear-gradient(180deg, #000000 0%, #0a0a1a 50%, #000000 100%);
+            padding: 180px 0 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,%3Csvg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23667eea" fill-opacity="0.03"%3E%3Cpath d="M50 50v-6h-3v6h-6v3h6v6h3v-6h6v-3h-6zm0-44V0h-3v6h-6v3h6v6h3V9h6V6h-6zM10 50v-6H7v6H1v3h6v6h3v-6h6v-3h-6zM10 6V0H7v6H1v3h6v6h3V9h6V6h-6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 72px;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #ffffff 0%, #667eea 50%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+            background-size: 200% 200%;
+            text-shadow: 0 0 60px rgba(102, 126, 234, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero .btn {
+            font-size: 18px;
+            padding: 16px 40px;
+            margin: 0 10px;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* 功能区域 */
+        .features {
+            padding: 120px 0;
+            background: linear-gradient(180deg, #000000 0%, #0a0a1a 100%);
+            position: relative;
+        }
+        
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #ffffff 0%, #667eea 50%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, rgba(10, 10, 20, 0.8), rgba(20, 20, 40, 0.8));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+        }
+        
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+        }
+        
+        /* 教程板块 */
+        .news {
+            padding: 120px 0;
+            background: linear-gradient(180deg, #0a0a1a 0%, #000000 100%);
+            position: relative;
+        }
+        
+        .news::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+        }
+        
+        .news h2 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #ffffff 0%, #667eea 50%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 40px;
+        }
+        
+        .news-card {
+            background: linear-gradient(135deg, rgba(10, 10, 20, 0.8), rgba(20, 20, 40, 0.8));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            z-index: 1;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .news-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .news-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* 骨架屏样式 */
+        .skeleton-card {
+            background: linear-gradient(90deg, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            pointer-events: none;
+            min-height: 350px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .skeleton-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 25%, rgba(102, 126, 234, 0.2) 50%, rgba(102, 126, 234, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        .skeleton-content {
+            padding: 30px;
+        }
+        
+        .skeleton-title {
+            height: 24px;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.2) 25%, rgba(102, 126, 234, 0.3) 50%, rgba(102, 126, 234, 0.2) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            width: 80%;
+        }
+        
+        .skeleton-text {
+            height: 16px;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.15) 25%, rgba(102, 126, 234, 0.25) 50%, rgba(102, 126, 234, 0.15) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        
+        .skeleton-date {
+            height: 14px;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 25%, rgba(102, 126, 234, 0.2) 50%, rgba(102, 126, 234, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+            width: 40%;
+            margin-top: 20px;
+        }
+        
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .news-image-wrapper {
+            overflow: hidden;
+        }
+        
+        .news-content {
+            padding: 30px;
+        }
+        
+        .news-content h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #667eea;
+            line-height: 1.4;
+        }
+        
+        .news-content p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .news-date {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* 教程详情弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 40px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .modal-header h2 {
+            font-size: 28px;
+            color: #667eea;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #8b949e;
+            font-size: 36px;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+        
+        .close-btn:hover {
+            color: #ffffff;
+        }
+        
+        .modal-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-date {
+            color: #8b949e;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-content-text {
+            color: #c9d1d9;
+            line-height: 1.8;
+            font-size: 16px;
+            white-space: pre-wrap;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state p {
+            color: #8b949e;
+            font-size: 18px;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(180deg, #000000 0%, #0a0a1a 50%, #000000 100%);
+            color: white;
+            padding: 80px 0 40px;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 25px;
+            color: #667eea;
+            font-size: 20px;
+            text-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-section ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-section ul li a:hover {
+            color: #667eea;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+        
+        .footer-section ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .hero h1 {
+                font-size: 56px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+            
+            .nav-links {
+                margin: 20px 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 8px 15px;
+            }
+            
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .features h2,
+            .news h2 {
+                font-size: 36px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 150px 0 80px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .features h2,
+            .news h2 {
+                font-size: 28px;
+            }
+            
+            .feature-grid,
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card,
+            .news-card {
+                padding: 30px 20px;
+            }
+            
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .auth-buttons .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .nav-links li {
+                margin: 5px 10px;
+            }
+            
+            .nav-links a {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+        }
+        
+        /* 滚动动画 */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- 粒子背景 --&gt;
+    &lt;div class="particles" id="particles"&gt;&lt;/div&gt;
+    
+    &lt;!-- 导航栏 --&gt;
+    &lt;header&gt;
+        &lt;div class="container"&gt;
+            &lt;nav class="navbar"&gt;
+                &lt;a href="index.html" class="logo"&gt;
+                    &lt;span class="logo-text"&gt;米核AI●易山&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;ul class="nav-links"&gt;
+                    &lt;li&gt;&lt;a href="index.html"&gt;首页&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="https://miheai.com/#/workflow-center" target="_blank"&gt;工作流中心&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="https://miheai.com/#/digital-human" target="_blank"&gt;数字人&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="https://miheai.com/#/market" target="_blank"&gt;插件市场&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="#tutorials"&gt;教程中心&lt;/a&gt;&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="https://miheai.com/s/14282" target="_blank"&gt;体验会员&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;div class="auth-buttons"&gt;
+                    &lt;a href="https://miheai.com/s/14282" target="_blank" class="btn btn-secondary"&gt;登录&lt;/a&gt;
+                    &lt;a href="https://miheai.com/s/14282" target="_blank" class="btn btn-primary"&gt;注册&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/nav&gt;
+        &lt;/div&gt;
+    &lt;/header&gt;
+    
+    &lt;!-- 英雄区域 --&gt;
+    &lt;section class="hero"&gt;
+        &lt;div class="container"&gt;
+            &lt;div class="hero-content"&gt;
+                &lt;h1&gt;米核AI●易山&lt;/h1&gt;
+                &lt;p&gt;高质量插件视频/声音合成/平台数据分析等，全面高质量插件生态，算力使用成本低下。200+工作流自媒体/视频/图文/商用/电商等200+工作流，一键下载，导入即用，长期维护更新。&lt;/p&gt;
+                &lt;div class="hero-buttons"&gt;
+                    &lt;a href="https://miheai.com/#/workflow-center" target="_blank" class="btn btn-primary"&gt;立即体验&lt;/a&gt;
+                    &lt;a href="#features" class="btn btn-secondary"&gt;了解更多&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+    
+    &lt;!-- 功能区域 --&gt;
+    &lt;section class="features" id="features"&gt;
+        &lt;div class="container"&gt;
+            &lt;h2 class="scroll-animate"&gt;核心功能&lt;/h2&gt;
+            &lt;div class="feature-grid"&gt;
+                &lt;div class="feature-card scroll-animate"&gt;
+                    &lt;h3&gt;高质量插件&lt;/h3&gt;
+                    &lt;p&gt;视频/声音合成/平台数据分析等，全面高质量插件生态，算力使用成本低下。&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="feature-card scroll-animate"&gt;
+                    &lt;h3&gt;200+工作流&lt;/h3&gt;
+                    &lt;p&gt;自媒体/视频/图文/商用/电商等200+工作流，一键下载，导入即用，长期维护更新。&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="feature-card scroll-animate"&gt;
+                    &lt;h3&gt;商用智能体&lt;/h3&gt;
+                    &lt;p&gt;数十款视频/图片/工具/企业商用等高质量智能体，直接在平台灵活使用！&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="feature-card scroll-animate"&gt;
+                    &lt;h3&gt;系统AI学习&lt;/h3&gt;
+                    &lt;p&gt;从基础课到高级课，20年技术经验米院长亲自授课，深度掌握智能体搭建能力！&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="feature-card scroll-animate"&gt;
+                    &lt;h3&gt;优质提示词&lt;/h3&gt;
+                    &lt;p&gt;AI各个平台/大模型常用的优质提示词集中地，一次性掌握全部好用提示词！&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="feature-card scroll-animate"&gt;
+                    &lt;h3&gt;会员群答疑&lt;/h3&gt;
+                    &lt;p&gt;全网唯一的，工作时间答疑密度超过提问密度的社群，让你学习和应用中，不再有卡点！&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+    
+    &lt;!-- 教程板块 --&gt;
+    &lt;section class="news" id="tutorials"&gt;
+        &lt;div class="container"&gt;
+            &lt;h2 class="scroll-animate"&gt;教程中心&lt;/h2&gt;
+            &lt;div class="news-grid" id="tutorialGrid"&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+    
+    &lt;!-- 教程详情弹窗 --&gt;
+    &lt;div id="tutorialModal" class="modal"&gt;
+        &lt;div class="modal-content"&gt;
+            &lt;div class="modal-header"&gt;
+                &lt;h2 id="modalTitle"&gt;&lt;/h2&gt;
+                &lt;button class="close-btn" onclick="closeTutorialModal()"&gt;&amp;times;&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;img id="modalImage" class="modal-image" style="display: none;"&gt;
+            &lt;div id="modalDate" class="modal-date"&gt;&lt;/div&gt;
+            &lt;div id="modalContent" class="modal-content-text"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- 页脚 --&gt;
+    &lt;footer id="about"&gt;
+        &lt;div class="container"&gt;
+            &lt;div class="footer-content"&gt;
+                &lt;div class="footer-section"&gt;
+                    &lt;h3&gt;米核AI●易山&lt;/h3&gt;
+                    &lt;p style="color: rgba(255,255,255,0.7); line-height: 1.8;"&gt;全民AI能力提升&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="footer-section"&gt;
+                    &lt;h3&gt;快速链接&lt;/h3&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;&lt;a href="https://www.douyin.com/user/MS4wLjABAAAA_P6DXe79y3TBptt8fk_1_rgAf73d1iKmAB8HvCJ5pB4?from_tab_name=main&vid=7624491465872248393" target="_blank" style="display: inline-flex; align-items: center; gap: 8px;"&gt;
+                            &lt;svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
+                                &lt;path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v14.81a2.55 2.55 0 1 1-2.54-2.55 2.47 2.47 0 0 1 .9.17v-3.7a5.97 5.97 0 0 0-.9-.06 6 6 0 1 0 6 6v-1.77a4.8 4.8 0 0 1 2.44 4.53 4.5 4.5 0 1 1-4.5-4.44 4.33 4.33 0 0 1 2.06.5V12.5a7.86 7.86 0 0 0 4.5 1.42v-3.4a4.43 4.43 0 0 1-2.81-3.83z" fill="#ffffff"/&gt;
+                            &lt;/svg&gt;
+                            抖音
+                        &lt;/a&gt;&lt;/li&gt;
+
+                    &lt;/ul&gt;
+                &lt;/div&gt;
+                &lt;div class="footer-section"&gt;
+                    &lt;h3&gt;联系我们&lt;/h3&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;&lt;a href="mailto:yishan@miheaii.com"&gt;邮箱: yishan@miheaii.com&lt;/a&gt;&lt;/li&gt;
+                        &lt;li&gt;&lt;a href="tel:17642036631"&gt;电话: 17642036631&lt;/a&gt;&lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class="footer-bottom"&gt;
+                &lt;p&gt;&amp;copy; 2026 米核AI●易山. 保留所有权利.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/footer&gt;
+    
+    &lt;script&gt;
+        // 创建粒子效果
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i &lt; particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 6 + 2;
+                const left = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 10 + 15;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = left + '%';
+                particle.style.bottom = '-20px';
+                particle.style.animationDelay = delay + 's';
+                particle.style.animationDuration = duration + 's';
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // 滚动动画
+        function initScrollAnimations() {
+            const elements = document.querySelectorAll('.scroll-animate');
+            
+            const observer = new IntersectionObserver((entries) =&gt; {
+                entries.forEach(entry =&gt; {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            elements.forEach(element =&gt; {
+                observer.observe(element);
+            });
+        }
+        
+        // 导航栏滚动效果
+        function initNavbarScroll() {
+            const header = document.querySelector('header');
+            let lastScroll = 0;
+            
+            window.addEventListener('scroll', () =&gt; {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll &gt; 100) {
+                    header.style.boxShadow = '0 0 40px rgba(102, 126, 234, 0.2)';
+                } else {
+                    header.style.boxShadow = '0 0 30px rgba(102, 126, 234, 0.1)';
+                }
+                
+                lastScroll = currentScroll;
+            });
+        }
+        
+        // 平滑滚动
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor =&gt; {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+        }
+        
+        // 显示骨架屏
+        function showSkeleton() {
+            const grid = document.getElementById('tutorialGrid');
+            if (!grid) return;
+            
+            let skeletonHTML = '';
+            for (let i = 0; i < 6; i++) {
+                skeletonHTML += `
+                    <div class="news-card skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-title"></div>
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-date"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            grid.innerHTML = skeletonHTML;
+        }
+        
+        // 加载教程
+        async function loadTutorials() {
+            // 先显示骨架屏，不阻塞页面渲染
+            showSkeleton();
+            
+            // 延迟加载数据，让页面先渲染出来
+            setTimeout(async () => {
+                try {
+                    const response = await fetch('/api/tutorials');
+                    const tutorials = await response.json();
+                    renderTutorials(tutorials);
+                } catch (error) {
+                    console.log('未连接后端，显示静态内容');
+                    renderTutorials([]);
+                }
+            }, 100);
+        }
+        
+        // 渲染教程列表
+        function renderTutorials(tutorials) {
+            const grid = document.getElementById('tutorialGrid');
+            
+            if (tutorials.length === 0) {
+                grid.innerHTML = `
+                    &lt;div class="empty-state"&gt;
+                        &lt;p&gt;暂无教程，敬请期待！&lt;/p&gt;
+                    &lt;/div&gt;
+                `;
+                return;
+            }
+            
+            // 渐进式显示内容
+            grid.innerHTML = tutorials.map((t, index) =&gt; `
+                &lt;div class="news-card scroll-animate" onclick="openTutorial(${t.id})" style="animation: fadeInUp 0.5s ease ${index * 0.1}s both;"&gt;
+                    &lt;div class="news-image-wrapper"&gt;
+                        ${t.cover_image ? 
+                            `&lt;img src="${t.cover_image}" alt="${escapeHtml(t.title)}" loading="lazy" decoding="async"&gt;` :
+                            `&lt;img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=AI%20tutorial%20learning%20futuristic%20blue%20purple%20gradient%20design&amp;image_size=square_hd" alt="教程图片" loading="lazy" decoding="async"&gt;`
+                        }
+                    &lt;/div&gt;
+                    &lt;div class="news-content"&gt;
+                        &lt;h3&gt;${escapeHtml(t.title)}&lt;/h3&gt;
+                        &lt;p&gt;${escapeHtml(t.content)}&lt;/p&gt;
+                        &lt;div class="news-date"&gt;${t.created_at}&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            `).join('');
+            
+            initScrollAnimations();
+        }
+        
+        // 打开教程详情
+        async function openTutorial(id) {
+            try {
+                const response = await fetch(`/api/tutorial/${id}`);
+                const tutorial = await response.json();
+                
+                document.getElementById('modalTitle').textContent = tutorial.title;
+                document.getElementById('modalDate').textContent = tutorial.created_at;
+                document.getElementById('modalContent').textContent = tutorial.content;
+                
+                const modalImage = document.getElementById('modalImage');
+                if (tutorial.cover_image) {
+                    modalImage.src = tutorial.cover_image;
+                    modalImage.style.display = 'block';
+                } else {
+                    modalImage.style.display = 'none';
+                }
+                
+                document.getElementById('tutorialModal').classList.add('active');
+            } catch (error) {
+                console.error('加载教程详情失败:', error);
+            }
+        }
+        
+        // 关闭教程详情
+        function closeTutorialModal() {
+            document.getElementById('tutorialModal').classList.remove('active');
+        }
+        
+        // 点击弹窗外部关闭
+        document.getElementById('tutorialModal').addEventListener('click', (e) =&gt; {
+            if (e.target === document.getElementById('tutorialModal')) {
+                closeTutorialModal();
+            }
+        });
+        
+        // 转义HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 页面加载时初始化 - 优化加载顺序
+        document.addEventListener('DOMContentLoaded', () =&gt; {
+            // 优先初始化视觉元素
+            createParticles();
+            initNavbarScroll();
+            initSmoothScroll();
+            
+            // 立即显示骨架屏并加载教程
+            loadTutorials();
+            
+            // 延迟初始化滚动动画
+            initScrollAnimations();
+        });
+        
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', (e) =&gt; {
+            if (e.key === 'Escape') {
+                closeTutorialModal();
+            }
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
