@@ -7,6 +7,7 @@ import os
 app = Flask(__name__)
 app.secret_key = 'miheai_beizhai_secret_key_2024'
 app.config['JSON_AS_ASCII'] = False
+app.json.ensure_ascii = False
 basedir = os.path.abspath(os.path.dirname(__file__))
 basedir = os.path.abspath(os.path.dirname(__file__))
 
