@@ -19,9 +19,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+if os.environ.get('VERCEL'):
+    UPLOAD_FOLDER = '/tmp/uploads'
+else:
+    UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class User(db.Model):
@@ -214,7 +216,8 @@ def init_db():
             print('默认管理员账号创建成功！')
             print('用户名: admin')
             print('密码: adminpengpeng')
-
+if os.environ.get('VERCEL'):
+    init_db()
 if __name__ == '__main__':
     init_db()
     app.run(host='127.0.0.1', port=5001, debug=True, use_reloader=False)
