@@ -7,11 +7,16 @@ import os
 app = Flask(__name__)
 app.secret_key = 'miheai_beizhai_secret_key_2024'
 app.config['JSON_AS_ASCII'] = False
-
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'miheai.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+basedir = os.path.abspath(os.path.dirname(__file__))
 
+if os.environ.get('VERCEL'):
+    db_path = '/tmp/miheai.db'
+else:
+    db_path = os.path.join(basedir, 'miheai.db')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
