@@ -96,15 +96,6 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-class Tutorial(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    cover_image = db.Column(db.String(500))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    is_published = db.Column(db.Boolean, default=True)
-
 @app.route('/')
 def index():
     return send_from_directory(basedir, 'index.html')
