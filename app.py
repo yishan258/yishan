@@ -19,7 +19,65 @@ else:
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+class Tutorial(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    cover_image = db.Column(db.String(500))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_published = db.Column(db.Boolean, default=True)
+    is_pinned = db.Column(db.Boolean, default=False)
 
+def verify_bearer_token():
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return False
+    token = auth_header.replace('Bearer ', '', 1)
+    return token == BEARER_TOKEN
+
+@app.route('/api/articles', methods=['GET'])
+def get_articles():
+    articles = Tutorial.query.order_by(Tutorial.created_at.desc()).all()
+    return jsonify([
+        {
+            'id': a.id,
+            'title': a.title,
+            'content': a.content,
+            'cover_image': a.cover_image,
+            'created_at': a.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        for a in articles
+    ])
+
+@app.route('/api/articles', methods=['POST'])
+def create_article():
+    if not verify_bearer_token():
+        return jsonify({'error': 'Unauthorized', 'code': 401}), 401
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({'error': 'Invalid request body', 'code': 400}), 400
+
+    title = (data.get('title') or '').strip()
+    content = data.get('content')
+    cover_image = data.get('cover_image')
+
+    if not title or not content:
+        return jsonify({'error': 'Title and content are required', 'code': 400}), 400
+
+    article = Tutorial(
+        title=title,
+        content=content,
+        is_published=True,
+        is_pinned=False,
+        cover_image=cover_image,
+    )
+
+    db.session.add(article)
+    db.session.commit()
+
+    return jsonify({'id': article.id, 'title': article.title, 'message': '创建成功'}), 201
 if os.environ.get('VERCEL'):
     UPLOAD_FOLDER = '/tmp/uploads'
 else:
