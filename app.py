@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
-
+BEARER_TOKEN = os.environ.get('BEARER_TOKEN', '')
 app = Flask(__name__)
 app.secret_key = 'miheai_beizhai_secret_key_2024'
 app.config['JSON_AS_ASCII'] = False
