@@ -436,10 +436,13 @@
                     <td>${t.created_at}</td>
                     <td><span class="badge ${t.is_published ? 'badge-success' : 'badge-warning'}">${t.is_published ? '已发布' : '草稿'}</span></td>
                     <td>
-                        <div class="actions">
-                            <button class="btn btn-secondary btn-sm" onclick="editTutorial(${t.id})">编辑</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteTutorial(${t.id})">删除</button>
-                        </div>
+<td>
+  <div class="actions">
+    <button class="btn btn-secondary btn-sm" onclick="editTutorial(${t.id})">编辑</button>
+    <button class="btn btn-secondary btn-sm" onclick="togglePinned(${t.id}, ${!t.is_pinned})">${t.is_pinned ? '取消置顶' : '置顶'}</button>
+    <button class="btn btn-danger btn-sm" onclick="deleteTutorial(${t.id})">删除</button>
+  </div>
+</td>
                     </td>
                 </tr>
             `).join('');
@@ -603,7 +606,37 @@
                 }
             }
         }
-        
+                async function togglePinned(id, isPinned) {
+            try {
+                const response = await fetch(`/api/admin/tutorial/${id}/pin`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ is_pinned: isPinned })
+                });
+
+                const contentType = response.headers.get('content-type') || '';
+                const result = contentType.includes('application/json') ? await response.json() : null;
+
+                if (response.ok) {
+                    loadTutorials();
+                    return;
+                }
+
+                if (result && result.code === 401) {
+                    alert('登录已过期，请重新登录后重试');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const errorMsg = (result && (result.error || result.message)) ? (result.error || result.message) : '未知错误';
+                alert('置顶操作失败: ' + errorMsg);
+            } catch (error) {
+                console.error('置顶操作失败:', error);
+                alert('网络错误或服务器无响应:\n' + error.message);
+            }
+        }
         async function deleteTutorial(id) {
             if (!confirm('确定要删除这个教程吗？')) return;
             
